@@ -153,7 +153,7 @@ public class dfTextbox : dfInteractiveBase, IDFMultiRender, IRendersText
 
 	private bool isFontCallbackAssigned = false;
 
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_BLACKBERRY || UNITY_WP8 || UNITY_EDITOR
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_BLACKBERRY || UNITY_WP8// || UNITY_EDITOR
 	private static TouchScreenKeyboard mobileKeyboard;
 #endif
 
@@ -573,7 +573,7 @@ public class dfTextbox : dfInteractiveBase, IDFMultiRender, IRendersText
 		set { this.useMobileKeyboard = value; }
 	}
 
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_BLACKBERRY || UNITY_WP8 || UNITY_EDITOR
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_BLACKBERRY || UNITY_WP8// || UNITY_EDITOR
 	/// <summary>
 	/// Gets or sets the type of on-screen keyboard to display
 	/// </summary>
@@ -977,7 +977,7 @@ protected internal override void OnClick( dfMouseEventArgs args )
 
 		base.OnLeaveFocus( args );
 
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_BLACKBERRY || UNITY_WP8 || UNITY_EDITOR
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_BLACKBERRY || UNITY_WP8// || UNITY_EDITOR
 		if( mobileKeyboard != null )
 		{
 			mobileKeyboard.active = false;

@@ -122,13 +122,14 @@ public class dfTextboxInspector : dfControlInspector
 					control.MobileKeyboardTrigger = triggerType;
 				}
 
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_BLACKBERRY || UNITY_WP8// || UNITY_EDITOR
 				var keyboardType = (TouchScreenKeyboardType)EditorGUILayout.EnumPopup( "Keyboard Type", control.MobileKeyboardType );
 				if( keyboardType != control.MobileKeyboardType )
 				{
 					dfEditorUtil.MarkUndo( control, "Change mobile keyboard type" );
 					control.MobileKeyboardType = keyboardType;
 				}
-
+#endif
 				var useAutoCorrect = EditorGUILayout.Toggle( "Auto-Correct", control.MobileAutoCorrect );
 				if( useAutoCorrect != control.MobileAutoCorrect )
 				{
