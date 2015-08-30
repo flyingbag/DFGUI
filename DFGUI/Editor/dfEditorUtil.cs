@@ -208,7 +208,7 @@ public class dfEditorUtil
 		Undo.RegisterCompleteObjectUndo( target, UndoMessage );
 
 #else
-		Undo.RegisterSceneUndo( UndoMessage );
+		Undo.RecordObject( target, UndoMessage );
 #endif
 
 		EditorUtility.SetDirty( target );
