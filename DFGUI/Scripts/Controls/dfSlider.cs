@@ -73,6 +73,9 @@ public class dfSlider : dfControl
 	[SerializeField]
 	protected bool rightToLeft = false;
 
+	[SerializeField]
+	protected bool bottomToTop = false;
+
 	#endregion
 
 	#region Public properties
@@ -348,6 +351,24 @@ public class dfSlider : dfControl
 		}
 	}
 
+	/// <summary>
+	/// Gets or sets whether the thumb position will be aligned
+	/// to the top of the control when the Value is set to the
+	/// minimum, or aligned to the bottom (default)
+	/// </summary>
+	public bool BottomToTop
+	{
+		get { return this.bottomToTop; }
+		set
+		{
+			if (value != this.bottomToTop)
+			{
+				this.bottomToTop = value;
+				updateValueIndicators(this.rawValue);
+			}
+		}
+	}
+
 	#endregion
 
 	#region Event-handling and notification
@@ -379,13 +400,13 @@ public class dfSlider : dfControl
 		{
 			if( args.KeyCode == KeyCode.UpArrow )
 			{
-				this.Value += ScrollSize;
+				this.Value -= (this.bottomToTop) ? -scrollSize : scrollSize;
 				args.Use();
 				return;
 			}
 			else if( args.KeyCode == KeyCode.DownArrow )
 			{
-				this.Value -= ScrollSize;
+				this.Value += (this.bottomToTop) ? -scrollSize : scrollSize;
 				args.Use();
 				return;
 			}
@@ -592,7 +613,7 @@ public class dfSlider : dfControl
 			var offset = (Vector3)thumbOffset * PixelsToUnits();
 
 			var thumbPos = endPoints[ 0 ] + dir.normalized * distance + offset;
-			if( orientation == dfControlOrientation.Vertical || rightToLeft )
+			if( bottomToTop || rightToLeft )
 			{
 				// Vertical sliders start at bottom
 				thumbPos = endPoints[ 1 ] + -dir.normalized * distance + offset;
@@ -617,7 +638,7 @@ public class dfSlider : dfControl
 		{
 			indicator.FillAmount = lerp;
 			indicator.FillDirection = orientation == dfControlOrientation.Horizontal ? dfFillDirection.Horizontal : dfFillDirection.Vertical;
-			indicator.InvertFill = rightToLeft || orientation == dfControlOrientation.Vertical;
+			indicator.InvertFill = rightToLeft || bottomToTop;
 		}
 		else
 		{
@@ -646,7 +667,7 @@ public class dfSlider : dfControl
 		var start = endPoints[ 0 ];
 		var end = endPoints[ 1 ];
 
-		if( orientation == dfControlOrientation.Vertical || rightToLeft )
+		if( bottomToTop || rightToLeft )
 		{
 			start = endPoints[ 1 ];
 			end = endPoints[ 0 ];

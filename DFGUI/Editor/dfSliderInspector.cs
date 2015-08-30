@@ -61,6 +61,13 @@ public class dfSliderInspector : dfControlInspector
 				control.RightToLeft = rtl;
 			}
 
+			var btt = EditorGUILayout.Toggle( "Bottom to Top", control.BottomToTop );
+			if( btt != control.BottomToTop )
+			{
+				dfEditorUtil.MarkUndo(control, "Switch Bottom to Top");
+				control.BottomToTop = btt;
+			}
+
 			var min = EditorGUILayout.FloatField( "Min Value", control.MinValue );
 			if( min != control.MinValue )
 			{
