@@ -972,6 +972,7 @@ public class dfInputManager : MonoBehaviour
 			private dfInputManager manager;
 
 			private Vector3 controlStartPosition;
+			private Vector3 controlStartScreenPosition;
 			private dfDragDropState dragState = dfDragDropState.None;
 			private object dragData = null;
 
@@ -984,6 +985,7 @@ public class dfInputManager : MonoBehaviour
 				this.manager = manager;
 				this.control = control;
 				this.controlStartPosition = control.transform.position;
+				this.controlStartScreenPosition = control.GetCamera().WorldToScreenPoint(controlStartPosition);
 			}
 
 			#endregion
@@ -1299,9 +1301,8 @@ public class dfInputManager : MonoBehaviour
 
 				#region Should not fire click event if control has been moved
 
-				var p2u = control.PixelsToUnits();
-				var startPosition = controlStartPosition / p2u;
-				var currentPosition = control.transform.position / p2u;
+				var startPosition = controlStartScreenPosition;
+				var currentPosition = control.GetCamera().WorldToScreenPoint(control.transform.position);
 
 				if( Vector3.Distance( startPosition, currentPosition ) > 1f )
 					return false;
@@ -1428,6 +1429,9 @@ public class dfInputManager : MonoBehaviour
 
 		/// <summary> The last dfControl to have received mouse events </summary>
 		private Vector3 activeControlPosition;
+
+		/// <summary> The last dfControl position in screen space to have received mouse events </summary>
+		private Vector3 activeControlScreenPosition;
 
 		/// <summary> The last mouse position tracked, used to determine when to fire MouseMove events </summary>
 		private Vector2 lastPosition = Vector2.one * int.MinValue;
@@ -1635,9 +1639,8 @@ public class dfInputManager : MonoBehaviour
 				if( activeControl == control && buttonsDown == dfMouseButtons.None )
 				{
 
-					var p2u = activeControl.PixelsToUnits();
-					var startPosition = activeControlPosition / p2u;
-					var currentPosition = activeControl.transform.position / p2u;
+					var startPosition = activeControlScreenPosition;
+					var currentPosition = activeControl.GetCamera().WorldToScreenPoint(activeControl.transform.position);
 
 					// Don't fire click events if the control has been moved since the mouse was down
 					if( Vector3.Distance( startPosition, currentPosition ) <= 1 )
@@ -1804,6 +1807,7 @@ public class dfInputManager : MonoBehaviour
 
 			activeControl = control;
 			activeControlPosition = ( control != null ) ? control.transform.position : Vector3.one * float.MinValue;
+			activeControlScreenPosition = (control != null) ? control.GetCamera().WorldToScreenPoint(activeControlPosition) : activeControlPosition;
 			lastPosition = position;
 			dragState = dfDragDropState.None;
 
