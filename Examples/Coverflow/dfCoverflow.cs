@@ -27,7 +27,7 @@ public class dfCoverflow : MonoBehaviour
 	public int selectedIndex = 0;
 
 	[SerializeField]
-	public int itemSize = 200;
+	public Vector2 itemSize = new Vector2(200, 200);
 
 	[SerializeField]
 	public float time = 0.33f;
@@ -315,14 +315,13 @@ public class dfCoverflow : MonoBehaviour
 
 		var controls = container.Controls;
 		var left = 0;
-		var top = ( container.Height - itemSize ) * 0.5f;
-		var size = Vector2.one * itemSize;
+		var top = ( container.Height - itemSize.y ) * 0.5f;
 
 		for( int i = 0; i < controls.Count; i++ )
 		{
-			controls[ i ].Size = size;
+			controls[ i ].Size = itemSize;
 			controls[ i ].RelativePosition = new Vector3( left, top );
-			left += itemSize + Mathf.Max( 0, spacing );
+			left += (int)itemSize.x + Mathf.Max( 0, spacing );
 		}
 
 	}
@@ -344,7 +343,7 @@ public class dfCoverflow : MonoBehaviour
 
 		}
 		
-		var top = ( container.Height - itemSize ) * 0.5f;
+		var top = ( container.Height - itemSize.y ) * 0.5f;
 		var itemPosition = new Vector3( currentX, top );
 
 		var count = controls.Count;
@@ -353,7 +352,7 @@ public class dfCoverflow : MonoBehaviour
 
 			var control = controls[ i ];
 
-			control.Size = new Vector2( itemSize, itemSize );
+			control.Size = itemSize;
 			control.RelativePosition = itemPosition;
 			control.Pivot = dfPivotPoint.MiddleCenter;
 
@@ -375,7 +374,7 @@ public class dfCoverflow : MonoBehaviour
 				control.transform.localRotation = Quaternion.identity;
 			}
 
-			itemPosition.x += itemSize + spacing;
+			itemPosition.x += itemSize.x + spacing;
 
 		}
 
@@ -399,7 +398,7 @@ public class dfCoverflow : MonoBehaviour
 	private float calcScale( float offset )
 	{
 
-		var center = ( container.Width - itemSize ) * 0.5f;
+		var center = ( container.Width - itemSize.x ) * 0.5f;
 		var distance = Mathf.Abs( center - offset );
 		var totalSize = getTotalSize();
 
@@ -410,7 +409,7 @@ public class dfCoverflow : MonoBehaviour
 	private float calcItemOpacity( float offset )
 	{
 
-		var center = ( container.Width - itemSize ) * 0.5f;
+		var center = ( container.Width - itemSize.x ) * 0.5f;
 		var distance = Mathf.Abs( center - offset );
 		var totalSize = getTotalSize();
 
@@ -422,7 +421,7 @@ public class dfCoverflow : MonoBehaviour
 	private float calcHorzRotation( float offset )
 	{
 
-		var center = ( container.Width - itemSize ) * 0.5f;
+		var center = ( container.Width - itemSize.x ) * 0.5f;
 		var distance = Mathf.Abs( center - offset );
 		var sign = Mathf.Sign( center - offset );
 		var totalSize = getTotalSize();
@@ -437,16 +436,16 @@ public class dfCoverflow : MonoBehaviour
 	private int getTotalSize()
 	{
 		var count = controls.Count;
-		var totalSize = count * itemSize + Mathf.Max( count, 0 ) * spacing;
+		var totalSize = count * (int)itemSize.x + Mathf.Max( count, 0 ) * spacing;
 		return totalSize;
 	}
 
 	private float calculateTargetPosition()
 	{
 
-		var centerPosition = ( container.Width - itemSize ) * 0.5f;
+		var centerPosition = ( container.Width - itemSize.x ) * 0.5f;
 
-		var targetPosition = centerPosition - selectedIndex * itemSize;
+		var targetPosition = centerPosition - selectedIndex * itemSize.x;
 		if( selectedIndex > 0 )
 			targetPosition -= selectedIndex * spacing;
 
