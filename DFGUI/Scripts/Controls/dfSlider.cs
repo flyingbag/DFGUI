@@ -71,6 +71,9 @@ public class dfSlider : dfControl
 	protected Vector2 thumbOffset = Vector2.zero;
 
 	[SerializeField]
+	protected bool valueChanging = false;
+
+	[SerializeField]
 	protected bool rightToLeft = false;
 
 	[SerializeField]
@@ -458,7 +461,7 @@ public class dfSlider : dfControl
 			return;
 		}
 
-		this.Value = getValueFromMouseEvent( args );
+		this.Value += getDeltaValueFromMouseEvent( args );
 		args.Use();
 
 		Signal( "OnMouseMove", this, args );
@@ -477,7 +480,7 @@ public class dfSlider : dfControl
 
 		this.Focus();
 
-		this.Value = getValueFromMouseEvent( args );
+		getValueFromMouseEvent( args );
 		args.Use();
 
 		Signal( "OnMouseDown", this, args );
@@ -679,18 +682,32 @@ public class dfSlider : dfControl
 		var distance = 0f;
 		if( !plane.Raycast( ray, out distance ) )
 		{
-			return this.rawValue;
+			valueChanging = false;
+//			return this.rawValue;
 		}
 
-		var hit = ray.GetPoint( distance );
-
-		var closest = closestPoint( start, end, hit, true );
-		var lerp = ( closest - start ).magnitude / ( end - start ).magnitude;
-		var rawValue = minValue + ( maxValue - minValue ) * lerp;
+		valueChanging = true;
+//		var hit = ray.GetPoint( distance );
+//
+//		var closest = closestPoint( start, end, hit, true );
+//		var lerp = ( closest - start ).magnitude / ( end - start ).magnitude;
+//		var rawValue = minValue + ( maxValue - minValue ) * lerp;
 
 
 		return rawValue;
 
+	}
+
+	private float getDeltaValueFromMouseEvent(dfMouseEventArgs args)
+	{
+		if (!valueChanging)
+			return 0f;
+
+		var moveDelta = (Orientation == dfControlOrientation.Horizontal) ?
+			((RightToLeft ? -args.MoveDelta.x : args.MoveDelta.x) / size.x) : ((BottomToTop ? args.MoveDelta.y : -args.MoveDelta.y) / size.y);
+		Debug.Log(Utils.Trace + moveDelta);
+
+		return moveDelta * (MaxValue - MinValue);
 	}
 
 	private Vector3[] getEndPoints()
