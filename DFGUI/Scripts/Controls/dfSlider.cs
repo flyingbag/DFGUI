@@ -71,13 +71,13 @@ public class dfSlider : dfControl
 	protected Vector2 thumbOffset = Vector2.zero;
 
 	[SerializeField]
-	protected bool valueChanging = false;
+	protected bool invertOrientation = false;
 
-	[SerializeField]
-	protected bool rightToLeft = false;
+	#endregion
 
-	[SerializeField]
-	protected bool bottomToTop = false;
+	#region Private members
+
+	private bool valueChanging = false;
 
 	#endregion
 
@@ -343,14 +343,13 @@ public class dfSlider : dfControl
 	/// </summary>
 	public bool RightToLeft
 	{
-		get { return this.rightToLeft; }
+		get { return Orientation == dfControlOrientation.Horizontal && invertOrientation; }
 		set
 		{
-			if( value != this.rightToLeft )
-			{
-				this.rightToLeft = value;
-				updateValueIndicators( this.rawValue );
-			}
+			if (invertOrientation != value)
+				invertOrientation = value;
+			if (Orientation != dfControlOrientation.Horizontal)
+				Orientation = dfControlOrientation.Horizontal;
 		}
 	}
 
@@ -361,14 +360,13 @@ public class dfSlider : dfControl
 	/// </summary>
 	public bool BottomToTop
 	{
-		get { return this.bottomToTop; }
+		get { return Orientation == dfControlOrientation.Vertical && invertOrientation; }
 		set
 		{
-			if (value != this.bottomToTop)
-			{
-				this.bottomToTop = value;
-				updateValueIndicators(this.rawValue);
-			}
+			if (invertOrientation != value)
+				invertOrientation = value;
+			if (Orientation != dfControlOrientation.Vertical)
+				Orientation = dfControlOrientation.Vertical;
 		}
 	}
 
@@ -388,13 +386,13 @@ public class dfSlider : dfControl
 		{
 			if( args.KeyCode == KeyCode.LeftArrow )
 			{
-				this.Value -= ( this.rightToLeft ) ? -scrollSize : scrollSize;
+				this.Value -= ( this.RightToLeft ) ? -scrollSize : scrollSize;
 				args.Use();
 				return;
 			}
 			else if( args.KeyCode == KeyCode.RightArrow )
 			{
-				this.Value += ( this.rightToLeft ) ? -scrollSize : scrollSize;
+				this.Value += ( this.RightToLeft ) ? -scrollSize : scrollSize;
 				args.Use();
 				return;
 			}
@@ -403,13 +401,13 @@ public class dfSlider : dfControl
 		{
 			if( args.KeyCode == KeyCode.UpArrow )
 			{
-				this.Value -= (this.bottomToTop) ? -scrollSize : scrollSize;
+				this.Value -= (this.BottomToTop) ? -scrollSize : scrollSize;
 				args.Use();
 				return;
 			}
 			else if( args.KeyCode == KeyCode.DownArrow )
 			{
-				this.Value += (this.bottomToTop) ? -scrollSize : scrollSize;
+				this.Value += (this.BottomToTop) ? -scrollSize : scrollSize;
 				args.Use();
 				return;
 			}
@@ -480,7 +478,7 @@ public class dfSlider : dfControl
 
 		this.Focus();
 
-		getValueFromMouseEvent( args );
+		valueChanging = getValueFromMouseEvent( args );
 		args.Use();
 
 		Signal( "OnMouseDown", this, args );
@@ -616,7 +614,7 @@ public class dfSlider : dfControl
 			var offset = (Vector3)thumbOffset * PixelsToUnits();
 
 			var thumbPos = endPoints[ 0 ] + dir.normalized * distance + offset;
-			if( bottomToTop || rightToLeft )
+			if( invertOrientation )
 			{
 				// Vertical sliders start at bottom
 				thumbPos = endPoints[ 1 ] + -dir.normalized * distance + offset;
@@ -641,7 +639,7 @@ public class dfSlider : dfControl
 		{
 			indicator.FillAmount = lerp;
 			indicator.FillDirection = orientation == dfControlOrientation.Horizontal ? dfFillDirection.Horizontal : dfFillDirection.Vertical;
-			indicator.InvertFill = rightToLeft || bottomToTop;
+			indicator.InvertFill = invertOrientation;
 		}
 		else
 		{
@@ -663,14 +661,14 @@ public class dfSlider : dfControl
 
 	}
 
-	private float getValueFromMouseEvent( dfMouseEventArgs args )
+	private bool getValueFromMouseEvent( dfMouseEventArgs args )
 	{
 
 		var endPoints = getEndPoints( true );
 		var start = endPoints[ 0 ];
 		var end = endPoints[ 1 ];
 
-		if( bottomToTop || rightToLeft )
+		if (invertOrientation)
 		{
 			start = endPoints[ 1 ];
 			end = endPoints[ 0 ];
@@ -682,19 +680,10 @@ public class dfSlider : dfControl
 		var distance = 0f;
 		if( !plane.Raycast( ray, out distance ) )
 		{
-			valueChanging = false;
-//			return this.rawValue;
+			return false;
 		}
 
-		valueChanging = true;
-//		var hit = ray.GetPoint( distance );
-//
-//		var closest = closestPoint( start, end, hit, true );
-//		var lerp = ( closest - start ).magnitude / ( end - start ).magnitude;
-//		var rawValue = minValue + ( maxValue - minValue ) * lerp;
-
-
-		return rawValue;
+		return true;
 
 	}
 
