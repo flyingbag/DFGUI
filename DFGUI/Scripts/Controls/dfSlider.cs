@@ -486,6 +486,12 @@ public class dfSlider : dfControl
 
 	}
 
+    protected internal override void OnMouseUp(dfMouseEventArgs args)
+    {
+        valueChanging = false;
+        base.OnMouseUp(args);
+    }
+
 	protected internal override void OnSizeChanged()
 	{
 		base.OnSizeChanged();
@@ -665,16 +671,14 @@ public class dfSlider : dfControl
 	{
 
 		var endPoints = getEndPoints( true );
-		var start = endPoints[ 0 ];
-		var end = endPoints[ 1 ];
+		var point = endPoints[ 0 ];
 
 		if (invertOrientation)
 		{
-			start = endPoints[ 1 ];
-			end = endPoints[ 0 ];
+			point = endPoints[ 1 ];
 		}
 
-		var plane = new Plane( transform.TransformDirection( Vector3.back ), start );
+		var plane = new Plane( transform.TransformDirection( Vector3.back ), point );
 
 		var ray = args.Ray;
 		var distance = 0f;
@@ -694,7 +698,6 @@ public class dfSlider : dfControl
 
 		var moveDelta = (Orientation == dfControlOrientation.Horizontal) ?
 			((RightToLeft ? -args.MoveDelta.x : args.MoveDelta.x) / size.x) : ((BottomToTop ? args.MoveDelta.y : -args.MoveDelta.y) / size.y);
-		Debug.Log(Utils.Trace + moveDelta);
 
 		return moveDelta * (MaxValue - MinValue);
 	}

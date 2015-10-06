@@ -105,7 +105,6 @@ public class dfScrollPanel : dfControl
     /// </summary>
     private object virtualScrollData;
 
-    private float lastWidth = 0;
     private IList<object> backingList;
 
     #endregion
@@ -1061,7 +1060,6 @@ public class dfScrollPanel : dfControl
         dp.IsEnabled = false;
         dp.Opacity = 0;
         dp.gameObject.hideFlags = HideFlags.HideInHierarchy;
-        lastWidth = tileLength + dPadding;
         //# We need to do more "dummy" hacking if user is using scrollbars so the scrollbar sees a "max scroll position".
         //# We can skip this whole block if we are paging (already know we have scrollbars).
         dfScrollbar sb;

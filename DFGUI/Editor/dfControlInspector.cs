@@ -3198,7 +3198,7 @@ public class dfControlInspector : Editor
 		} );
 
 #else
-		Undo.RegisterSceneUndo( undoMessage );
+		controls.ForEach(c => { Undo.RecordObject(c, undoMessage); });
 #endif
 
 	}
