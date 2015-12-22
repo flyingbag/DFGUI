@@ -52,6 +52,7 @@ public class dfCoverflow : MonoBehaviour
 	private dfList<dfControl> controls;
 	private dfAnimatedFloat currentX;
 	private Vector2 touchStartPosition;
+    private Vector2 lastPosition;
 
 	private int lastSelected = -1;
 	private bool isMouseDown = false;
@@ -141,6 +142,7 @@ public class dfCoverflow : MonoBehaviour
 	public void OnMouseDown( dfControl control, dfMouseEventArgs args )
 	{
 		touchStartPosition = args.Position;
+        lastPosition = args.Position;
 		isMouseDown = true;
 	}
 
@@ -180,7 +182,9 @@ public class dfCoverflow : MonoBehaviour
 		if( args.Used || !( ( args.Position - touchStartPosition ).magnitude > 5 ) )
 			return;
 
-		currentX += args.MoveDelta.x;
+        var moveDelta = args.Position - lastPosition;
+		currentX += moveDelta.x;
+        lastPosition = args.Position;
 		args.Use();
 
 	}
