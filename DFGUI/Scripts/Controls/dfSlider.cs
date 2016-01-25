@@ -71,6 +71,9 @@ public class dfSlider : dfControl
 	protected Vector2 thumbOffset = Vector2.zero;
 
 	[SerializeField]
+	protected dfPivotPoint thumbPivot = dfPivotPoint.MiddleCenter;
+
+	[SerializeField]
 	protected bool invertOrientation = false;
 
 	#endregion
@@ -331,8 +334,21 @@ public class dfSlider : dfControl
 			if( Vector2.Distance( value, this.thumbOffset ) > float.Epsilon )
 			{
 				this.thumbOffset = value;
+				Invalidate();
 				updateValueIndicators( this.rawValue );
 			}
+		}
+	}
+
+	public dfPivotPoint ThumbPivot
+	{
+		get { return this.thumbPivot; }
+		set
+		{
+			if (this.thumbPivot == value) return;
+			this.thumbPivot = value;
+			Invalidate();
+			updateValueIndicators( this.rawValue );
 		}
 	}
 
@@ -626,7 +642,7 @@ public class dfSlider : dfControl
 				thumbPos = endPoints[ 1 ] + -dir.normalized * distance + offset;
 			}
 
-			thumb.Pivot = dfPivotPoint.MiddleCenter;
+			thumb.Pivot = thumbPivot;
 			thumb.transform.position = thumbPos;
 
 		}

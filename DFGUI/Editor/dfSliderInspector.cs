@@ -132,6 +132,13 @@ public class dfSliderInspector : dfControlInspector
 					control.ThumbOffset = thumbPadding;
 				}
 
+				var pivot = (dfPivotPoint)EditorGUILayout.EnumPopup( "Pivot", control.ThumbPivot );
+				if( pivot != control.ThumbPivot )
+				{
+					dfEditorUtil.MarkUndo( control, "Change thumb Pivot" );
+					control.ThumbPivot = pivot;
+				}
+
 			}
 
 			var fill = EditorGUILayout.ObjectField( "Progress", control.Progress, typeof( dfControl ), true ) as dfControl;
