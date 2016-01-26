@@ -629,6 +629,10 @@ public class dfInputManager : MonoBehaviour
 			return;
 
 		var mouseScreenPos = adapter.GetMousePosition();
+
+		if (!renderCamera)
+			return;
+
 		var ray = renderCamera.ScreenPointToRay( mouseScreenPos );
 
 		controlUnderMouse = dfGUIManager.HitTestAll( mouseScreenPos );
