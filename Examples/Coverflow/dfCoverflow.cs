@@ -365,7 +365,8 @@ public class dfCoverflow : MonoBehaviour
 				var scale = calcScale( itemPosition.x );
 				control.transform.localScale = Vector3.one * scale;
 
-				control.Opacity = calcItemOpacity( itemPosition.x );
+				var controlOpacity = calcItemOpacity(itemPosition.x);
+				control.Opacity = control.IsEnabled ? controlOpacity : 0.5f * controlOpacity;
 
 			}
 			else
