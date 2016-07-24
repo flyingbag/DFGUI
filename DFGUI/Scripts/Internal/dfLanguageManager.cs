@@ -155,6 +155,18 @@ public class dfLanguageManager : MonoBehaviour
 
 	}
 
+	public string GetValue(string key, params string[] args)
+	{
+		string localizedValue = GetValue(key);
+		for (int i = 0; i < args.Length; ++i)
+		{
+			string placeholder = "{" + i + "}";
+			string arg = args[i];
+			localizedValue = localizedValue.Replace(placeholder, arg);
+		}
+		return localizedValue;
+	}
+
 	#endregion
 
 	#region Private utility methods 
